@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Community Bank</title>
+</head>
+<body>
+    <div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <script type="text/javascript">
+                        M.toast({html: '<span>{{ message }}</span><button class="btn-flat toast-action" style="color: white;" onclick="M.Toast.dismissAll();">X</button>', classes: 'rounded'})
+                    </script>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <h3 class="sameLine">
+        <a href="#" data-target="slide-out" class="sidenav-trigger" style="margin-left: 5%;">
+            <i class="material-icons small">menu</i>
+        </a>
+        <p style="position:relative; left: -3%; margin: 0 auto;">Community Bank</p>
+    </h3>
+    <div id="mainBody">
+        <h5>{{ eventName }}</h5>
+        <p>Meet us at {{ eventData["time"] }} at {{ eventData["location"] }} for {{ eventData["points"] }} points!</p>
+        <ul id="slide-out" class="sidenav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/sign_up">Sign Up</a></li>
+            <li><a href="/logout">Logout</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/admin_generate">Admin Generate</a></li>
+        </ul>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+        });
+    </script>
+</body>
+</html>
