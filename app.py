@@ -1,3 +1,4 @@
+import os
 import json
 import posixpath
 
@@ -8,25 +9,35 @@ from flask_qrcode import QRcode
 app = Flask(__name__)
 QRcode(app)
 
-with open("config.json") as configFile:
-    jsonConfig = json.load(configFile)
-    app.config["MONGO_URI"] = jsonConfig["MONGODB_CONNECTION_URL"]
-    app.secret_key = jsonConfig["SECRET_KEY"]
+if not 'DYNO' in os.environ:
+    with open("config.json") as configFile:
+        jsonConfig = json.load(configFile)
+        app.config["MONGO_URI"] = jsonConfig["MONGODB_CONNECTION_URL"]
+        app.secret_key = jsonConfig["SECRET_KEY"]
+else:
+    app.config["MONGO_URI"] = os.environ["MONGODB_CONNECTION_URL"]
+    app.secret_key = os.environ["SECRET_KEY"]
 
 with open("events.json") as eventsFile:
     events = json.load(eventsFile)
 
 mongo = PyMongo(app)
 
+@app.before_request
+def before_request():
+    if 'DYNO' in os.environ: # Only runs when on heroku
+        if request.url.startswith('http://'):
+            url = request.url.replace('http://', 'https://', 1)
+            code = 301
+            return redirect(url, code=code)
+
 @app.route("/")
 def home():
     if "logged_in" in session:
-        logged_in = session["logged_in"]
         points = mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"]
     else:
-        logged_in = None
         points = "Not Logged In"
-    return render_template("home.html", logged_in = logged_in, points = points)
+    return render_template("home.html", points = points)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -130,4 +141,4 @@ def eventParticipate(eventName):
         return redirect("/")
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug = "Dyno" not in os.environ)
