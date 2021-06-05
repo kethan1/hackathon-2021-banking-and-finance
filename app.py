@@ -45,7 +45,7 @@ def login():
         if "logged_in" in session and  session["logged_in"] != {}:
             flash("You are Already Logged In")
             return redirect("/")
-        return render_template("login.html")
+        return render_template("login.html", points = "Not Logged In")
     elif request.method == "POST":
         email, password = request.form["email"], request.form["password"]
         found = mongo.db.users.find_one({"email": email})
@@ -67,7 +67,7 @@ def sign_up():
         if "logged_in" in session and  session["logged_in"] != {}:
             flash("You are Already Logged In")
             return redirect("/")
-        return render_template("signup.html")
+        return render_template("signup.html", points = "Not Logged In")
     elif request.method == "POST":
         email, password = request.form["email"], request.form["password"]
         found = mongo.db.users.find_one({"email": email})
@@ -87,11 +87,19 @@ def sign_up():
 
 @app.route("/events")
 def show_events():
-    return render_template("events.html", events = events.items())
+    if "logged_in" in session:
+        points = mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"]
+    else:
+        points = "Not Logged In"
+    return render_template("events.html", events = events.items(), points = points)
 
 @app.route("/event_info/<eventName>")
 def event_info(eventName):
-    return render_template("event_info.html", eventName = eventName, eventData = events[eventName])
+    if "logged_in" in session:
+        points = mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"]
+    else:
+        points = "Not Logged In"
+    return render_template("event_info.html", eventName = eventName, eventData = events[eventName], points = points)
 
 @app.route("/admin_generate")
 def admin_generate():
@@ -106,7 +114,7 @@ def admin_generate():
                 print(request.host)
                 events_with_qr[event_name]["qrcode_url"] = posixpath.join(connection_type, request.host, f"eventParticipate/{event_name}")
             print(events_with_qr)
-            return render_template("admin_generate.html", events = events_with_qr)
+            return render_template("admin_generate.html", events = events_with_qr, points = "Not Logged In" if connection_type == "http://" else mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"])
         else:
             flash("Not Logged In As Admin")
             return redirect("/")

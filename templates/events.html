@@ -26,16 +26,22 @@
         <p style="position:relative; left: -3%; margin: 0 auto;">Community Bank</p>
     </h3>   
     <div id="mainBody">
-        {% for eventName, eventData in events %}
-            <a href="/event_info/{{ eventName }}">{{ eventName }}</a>
-        {% endfor %}
+        <br>
+        <h5>Upcoming Events</h5>
+        <ol class="browser-default" style="list-style-position: inside;">
+            {% for eventName, eventData in events %}
+                <li><a href="/event_info/{{ eventName }}">{{ eventName }}</a></li>
+            {% endfor %}
+        </ol>
         <ul id="slide-out" class="sidenav">
             <li><a href="/">Home</a></li>
             <li><a href="/login">Login</a></li>
             <li><a href="/sign_up">Sign Up</a></li>
             <li><a href="/logout">Logout</a></li>
-            <li><a href="/events">Events</a></li>
+            <li><a href="/events">Upcoming Events</a></li>
             <li><a href="/admin_generate">Admin Generate</a></li>
+            <li><div class="divider"></div></li>
+            <li>Your Points Are: {{ points }}</li>
         </ul>
     </div>
     
