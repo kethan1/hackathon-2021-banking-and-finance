@@ -117,12 +117,20 @@ def show_events():
 
 @app.route("/register_for_event", methods=["GET", "POST"])
 def register_for_event():
+    if "logged_in" in session:
+        points = mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"]
+    else:
+        points = "Not Logged In"
     flash("Thank you for signing up for an event!")
-    return redirect("/events")
+    return redirect("/events", points = points)
 
 @app.route("/register_for_event/<event_name>", methods=["GET", "POST"])
 def register_for_event_args(event_name):
-    return render_template("register_for_event.html", event_name = event_name)
+    if "logged_in" in session:
+        points = mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"]
+    else:
+        points = "Not Logged In"
+    return render_template("register_for_event.html", event_name = event_name, points = points)
 
 
 @app.route("/redeemables")
@@ -153,15 +161,10 @@ def admin_generate():
     if "logged_in" in session and  session["logged_in"] != {}:
         if session["logged_in"]["admin"] == True:
             events_with_qr = events
-            if request.is_secure:
-                connection_type = "https://"
-            else:
-                connection_type = "http://"
+            connection_type = "https://" if request.is_secure else "http://"
             for event_name in events:
-                print(request.host)
                 events_with_qr[event_name]["qrcode_url"] = posixpath.join(connection_type, request.host, f"eventParticipate/{event_name}")
-            print(events_with_qr)
-            return render_template("admin_generate.html", events = events_with_qr, points = "Not Logged In" if connection_type == "http://" else mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"])
+            return render_template("admin_generate.html", events = events_with_qr, points = "Not Logged In" if "logged_in" in session else mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"])
         else:
             flash("Not Logged In As Admin")
             return redirect("/")

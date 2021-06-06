@@ -66,10 +66,13 @@
         </ol>
         <ul id="slide-out" class="sidenav">
             <li><a href="/">Home</a></li>
-            <li><a href="/login">Login</a></li>
-            <li><a href="/sign_up">Sign Up</a></li>
-            <li><a href="/logout">Logout</a></li>
-            <li><a href="/events">Upcoming Events</a></li>
+            {% if points is number %}
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/login">Login</a></li>
+                <li><a href="/sign_up">Sign Up</a></li>
+            {% endif %}
+            <li><a href="/events">Events</a></li>
             <li><a href="/redeemables">Redeemables</a></li>
         </ul>
     </div>
