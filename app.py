@@ -178,7 +178,7 @@ def eventParticipate(eventName):
     if "logged_in" in session and session["logged_in"] != {}:
         points = mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"]
         mongo.db.users.update_one({"email": session["logged_in"]["email"]}, {"$set": {'points': points + events[eventName]["points"]}})
-        flash(f"Thanks for participating in {eventName}! You earned {events[eventName]['points']}")
+        flash(f"Thanks for participating in {eventName}! You earned {events[eventName]['points']} rewards!")
         return redirect("/")
     else:
         flash("Please Login to Get Points")
