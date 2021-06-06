@@ -54,8 +54,14 @@
             the location 5-10 mins early, and scan the QR code provided before the event.
         </p>
         <ol class="browser-default" style="list-style-position: inside;">
-            {% for eventName, eventData in events %}
-                <li><a href="/event_info/{{ eventName }}">{{ eventName }}</a></li>
+            {% for eventName in events %}
+                <li style="line-height: 50%;">
+                    <span>{{ eventName }}</span>
+                    <p>Time: {{ events[eventName]["time"] }}</p>
+                    <p>Date: {{ events[eventName]["date"] }}</p>
+                    <p>Location: {{ events[eventName]["location"] }}</p>
+                    <br><br>
+                </li>
             {% endfor %}
         </ol>
         <ul id="slide-out" class="sidenav">
@@ -66,8 +72,6 @@
             <li><a href="/events">Upcoming Events</a></li>
             <li><a href="/admin_generate">Admin Generate</a></li>
             <li><a href="/redeemables">Redeemables</a></li>
-            <li><div class="divider"></div></li>
-            <li>Your Points Are: {{ points }}</li>
         </ul>
     </div>
     

@@ -1,7 +1,38 @@
 {
-    "Clean Up the Creek!": {
+    "Lake Cleanup": {
         "points": 5,
         "time": "2:30 PM",
-        "location": "The Creek"
+        "date": "Sunday Jun 13th",
+        "location": "The Lake"
+    },
+    "Volunteering at the Library": {
+        "points": 3,
+        "time": "4:30 PM",
+        "date": "Monday Jun 21th",
+        "location": "The Library"
+    },
+    "Park Cleanup": {
+        "points": 3,
+        "time": "2:30 PM",
+        "date": "Wednesday Jun 23th",
+        "location": "Park"
+    },
+    "Volunteering at Senior Centers": {
+        "points": 3,
+        "time": "3:00 PM",
+        "date": "Thursday Jun 24th",
+        "location": "Senior Center"
+    },
+    "Volunteering at Animal Shelter": {
+        "points": 2,
+        "time": "2:30 PM",
+        "date": "Friday Jun 25th",
+        "location": "Animal Shelter"
+    },
+    "Tutoring Kids": {
+        "points": 6,
+        "time": "2:00 PM",
+        "date": "Wednesday Jun 30th",
+        "location": "Tutor Place"
     }
 }

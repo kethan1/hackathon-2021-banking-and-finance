@@ -92,13 +92,25 @@ def sign_up():
             flash("An Account is Already Registered With That Email Address")
             return redirect("/")
 
+
+@app.route("/logout")
+def logout():
+    if "logged_in" in session:
+        del session["logged_in"]
+        flash("Logged Out")
+    else:
+        flash("Not Logged In")
+    return redirect("/")
+
+
 @app.route("/events")
 def show_events():
     if "logged_in" in session:
         points = mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"]
     else:
         points = "Not Logged In"
-    return render_template("events.html", events = events.items(), points = points)
+    return render_template("events.html", events = events, points = points)
+
 
 @app.route("/redeemables")
 def get_redeemables():
@@ -107,6 +119,7 @@ def get_redeemables():
     else:
         points = "Not Logged In"
     return render_template("redeemables.html", points = points, redeemables = redeemables)
+
 
 @app.route("/redeemable/<redeemable>", methods=["GET", "POST"])
 def get_redeemable(redeemable):
@@ -121,13 +134,6 @@ def get_redeemable(redeemable):
     elif request.method == "POST":
         pass
 
-@app.route("/event_info/<eventName>")
-def event_info(eventName):
-    if "logged_in" in session:
-        points = mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"]
-    else:
-        points = "Not Logged In"
-    return render_template("event_info.html", eventName = eventName, eventData = events[eventName], points = points)
 
 @app.route("/admin_generate")
 def admin_generate():
@@ -150,20 +156,6 @@ def admin_generate():
         flash("Not Logged In")
         return redirect("/")
 
-@app.route("/logout")
-def logout():
-    if "logged_in" in session:
-        del session["logged_in"]
-        flash("Logged Out")
-    else:
-        flash("Not Logged In")
-    return redirect("/")
-
-@app.route("/api/get_user_points", methods=["POST"])
-def get_user_points():
-    return {
-        "points": mongo.db.users.find_one({"email": request.json["email"]})["points"]
-    }
 
 @app.route("/eventParticipate/<eventName>")
 def eventParticipate(eventName):
@@ -176,6 +168,14 @@ def eventParticipate(eventName):
         flash("Please Login to Get Points")
         return redirect("/")
 
+
+@app.route("/api/get_user_points", methods=["POST"])
+def get_user_points():
+    return {
+        "points": mongo.db.users.find_one({"email": request.json["email"]})["points"]
+    }
+
+
 @app.route("/api/login", methods=["POST"])
 def api_login():
     email, password = request.json["email"], request.json["password"]
@@ -187,6 +187,7 @@ def api_login():
             return {"code": "Incorrect Password"}
     else:
         return {"code": "No Email with That Address Found"}
+
 
 @app.route("/api/signup", methods=["POST"])
 def api_signup():
@@ -202,6 +203,7 @@ def api_signup():
         return {"code": "Successfully Signed Up"}
     else:
         return {"code": "An Account is Already Registered With That Email Address"}
+
 
 if __name__ == "__main__":
     app.run(debug = True)
