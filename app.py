@@ -9,6 +9,7 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 QRcode(app)
 flask_bcrypt = Bcrypt(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
