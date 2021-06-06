@@ -176,7 +176,7 @@ def eventParticipate(eventName):
         return redirect("/")
 
 @app.route("/api/login", methods=["POST"])
-def login():
+def api_login():
     email, password = request.json["email"], request.json["password"]
     if (found := mongo.db.users.find_one({"email": email})) is not None:
         if flask_bcrypt.check_password_hash(found["password"], password):
@@ -188,7 +188,7 @@ def login():
         return {"code": "No Email with That Address Found"}
 
 @app.route("/api/signup", methods=["POST"])
-def signup():
+def api_signup():
     email, password = request.json["email"], request.json["password"]
     if mongo.db.users.find_one({"email": email}) is None:
         mongo.db.users.insert_one({
