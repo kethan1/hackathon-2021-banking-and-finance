@@ -24,7 +24,18 @@
         <a href="#" data-target="slide-out" class="sidenav-trigger" style="margin-left: 5%;">
             <i class="material-icons small">menu</i>
         </a>
-        <p style="position:relative; left: -3%; margin: 0 auto;">Community Bank</p>
+        {% if points is not number %}
+            <p style="position: relative; right: -3%; margin: 0 auto;">Community Bank</p>
+        {% else %}
+            <p style="position: relative; left: -3%; margin: 0 auto;">Community Bank</p>
+        {% endif %}
+        <div style="position: relative; right: 3%; margin-left: 0 0 0 auto">
+            {% if points is number %}
+                <h5>{{ points }} Points<i class="material-icons inline-icon">account_circle</i></h5> 
+            {% else %}
+                <h5>Logged out<i class="material-icons inline-icon">account_circle</i></h5> 
+            {% endif %}       
+        </div>
     </h3>   
     <div id="mainBody">
         <p class="fadeIn">
@@ -32,8 +43,12 @@
             for free access to city provided events and much more. 
         </p>
         <br>
-        <h4>Your Points:</h4>
-        <h4>{{ points }}</h4>
+        {% if points is number %}
+            <h5 class="fadeIn">You Have {{ points }} Points</h5>
+        {% else %}
+            <h5 class="fadeIn">Login to View Your Points</h5>
+        {% endif %}
+
         <ul id="slide-out" class="sidenav">
             <li><a href="/">Home</a></li>
             <li><a href="/login">Login</a></li>
@@ -41,6 +56,7 @@
             <li><a href="/logout">Logout</a></li>
             <li><a href="/events">Events</a></li>
             <li><a href="/admin_generate">Admin Generate</a></li>
+            <li><div class="divider"></div></li>
             <li>Your Points Are: {{ points }}</li>
         </ul>
     </div>

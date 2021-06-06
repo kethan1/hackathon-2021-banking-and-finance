@@ -10,7 +10,6 @@ from flask_bcrypt import Bcrypt
 app = Flask(__name__)
 QRcode(app)
 flask_bcrypt = Bcrypt(app)
-print(flask_bcrypt.generate_password_hash("Password123"))
 
 if not 'DYNO' in os.environ:
     with open("config.json") as configFile:
@@ -24,6 +23,9 @@ else:
 
 with open("events.json") as eventsFile:
     events = json.load(eventsFile)
+
+with open("redeemables.json") as redeemablesFile:
+    redeemables = json.load(redeemablesFile)
 
 mongo = PyMongo(app)
 
@@ -96,6 +98,27 @@ def show_events():
     else:
         points = "Not Logged In"
     return render_template("events.html", events = events.items(), points = points)
+
+@app.route("/redeemables")
+def get_redeemables():
+    if "logged_in" in session:
+        points = mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"]
+    else:
+        points = "Not Logged In"
+    return render_template("redeemables.html", points = points, redeemables = redeemables)
+
+@app.route("/redeemable/<redeemable>", methods=["GET", "POST"])
+def get_redeemable(redeemable):
+    if request.method == "GET":
+        if "logged_in" in session:
+            points = mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"]
+        else:
+            points = "Not Logged In"
+        return render_template("redeemable.html", points = points, redeemable = [
+            redeemable, redeemables[redeemable]
+        ])
+    elif request.method == "POST":
+        pass
 
 @app.route("/event_info/<eventName>")
 def event_info(eventName):

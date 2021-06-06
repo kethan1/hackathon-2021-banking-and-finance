@@ -24,19 +24,25 @@
         <a href="#" data-target="slide-out" class="sidenav-trigger" style="margin-left: 5%;">
             <i class="material-icons small">menu</i>
         </a>
-        <p style="position:relative; left: -3%; margin: 0 auto;">Community Bank</p>
+        {% if points is not number %}
+            <p style="position: relative; right: -3%; margin: 0 auto;">Community Bank</p>
+        {% else %}
+            <p style="position: relative; left: -3%; margin: 0 auto;">Community Bank</p>
+        {% endif %}
+        <div style="position: relative; right: 3%; margin-left: 0 0 0 auto">
+            {% if points is number %}
+                <h5>{{ points }} Points<i class="material-icons inline-icon">account_circle</i></h5> 
+            {% else %}
+                <h5>Logged out<i class="material-icons inline-icon">account_circle</i></h5> 
+            {% endif %}       
+        </div>
     </h3>   
     <div id="mainBody">
         <br>
-        <h5>Upcoming Events</h5>
-        <p>Participating in Events:</p>
-        <p>
-            To participate in an event, a location and time will be provided. Arrive at
-            the location 5-10 mins early, and scan the QR code provided before the event.
-        </p>
+        <h5>Redeemables</h5>
         <ol class="browser-default" style="list-style-position: inside;">
-            {% for eventName, eventData in events %}
-                <li><a href="/event_info/{{ eventName }}">{{ eventName }}</a></li>
+            {% for redeemable in redeemables %}
+                <li><a href="/redeemable/{{ redeemable }}">{{ redeemable }} - Costs {{ redeemables[redeemable] }} Points</a></li>
             {% endfor %}
         </ol>
         <ul id="slide-out" class="sidenav">

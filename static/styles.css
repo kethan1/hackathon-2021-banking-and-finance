@@ -13,6 +13,11 @@
     -webkit-animation: fadein 2s; /* Safari and Chrome */
     -o-animation: fadein 2s; /* Opera */
 }
+
+.inline-icon {
+    vertical-align: bottom;
+}
+
 @keyframes fadein {
     from {
         opacity:0;
