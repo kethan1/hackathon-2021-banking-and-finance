@@ -6,10 +6,12 @@ from flask import Flask, render_template, session, request, flash, redirect
 from flask_pymongo import PyMongo
 from flask_qrcode import QRcode
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 
 app = Flask(__name__)
 QRcode(app)
 flask_bcrypt = Bcrypt(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 if not 'DYNO' in os.environ:
     with open("config.json") as configFile:
@@ -54,8 +56,7 @@ def login():
         return render_template("login.html", points = "Not Logged In")
     elif request.method == "POST":
         email, password = request.form["email"], request.form["password"]
-        found = mongo.db.users.find_one({"email": email})
-        if found is not None:
+        if (found := mongo.db.users.find_one({"email": email})) is not None:
             if flask_bcrypt.check_password_hash(found["password"], password):
                 session["logged_in"] = {"email": email, "admin": found["admin"]}
                 flash("Successfully Logged In")
@@ -76,8 +77,7 @@ def sign_up():
         return render_template("signup.html", points = "Not Logged In")
     elif request.method == "POST":
         email, password = request.form["email"], request.form["password"]
-        found = mongo.db.users.find_one({"email": email})
-        if found is None:
+        if mongo.db.users.find_one({"email": email}) is None:
             mongo.db.users.insert_one({
                 "email": email,
                 "password": flask_bcrypt.generate_password_hash(password),
@@ -175,5 +175,32 @@ def eventParticipate(eventName):
         flash("Please Login to Get Points")
         return redirect("/")
 
+@app.route("/api/login", methods=["POST"])
+def login():
+    email, password = request.json["email"], request.json["password"]
+    if (found := mongo.db.users.find_one({"email": email})) is not None:
+        if flask_bcrypt.check_password_hash(found["password"], password):
+            session["logged_in"] = {"email": email, "admin": found["admin"]}
+            return {"code": "Successfully Logged In"}
+        else:
+            return {"code": "Incorrect Password"}
+    else:
+        return {"code": "No Email with That Address Found"}
+
+@app.route("/api/signup", methods=["POST"])
+def signup():
+    email, password = request.json["email"], request.json["password"]
+    if mongo.db.users.find_one({"email": email}) is None:
+        mongo.db.users.insert_one({
+            "email": email,
+            "password": flask_bcrypt.generate_password_hash(password),
+            "admin": False,
+            "points": 0
+        })
+        session["logged_in"] = {"email": email}
+        return {"code": "Successfully Signed Up"}
+    else:
+        return {"code": "An Account is Already Registered With That Email Address"}
+
 if __name__ == "__main__":
-    app.run(debug = "Dyno" not in os.environ)
+    app.run(debug = True)

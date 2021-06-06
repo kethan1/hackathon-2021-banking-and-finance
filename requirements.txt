@@ -2,5 +2,6 @@ flask
 flask_pymongo
 flask_qrcode
 flask-hashing
+flask_cors
 gunicorn
 dnspython
