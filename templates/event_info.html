@@ -21,23 +21,30 @@
             {% endif %}
         {% endwith %}
     </div>
-    <h3 class="sameLine">
-        <a href="#" data-target="slide-out" class="sidenav-trigger" style="margin-left: 5%;">
-            <i class="material-icons small">menu</i>
+    <div class="sameLine">
+        <a data-target="slide-out" class="sidenav-trigger" style="margin-left: 5%; color: black;">
+            <br>
+            <i style="cursor: pointer;" class="material-icons small">menu</i>
         </a>
         {% if points is not number %}
-            <p style="position: relative; right: -3%; margin: 0 auto;">Community Bank</p>
+            <h3 style="margin: 0 auto;">Community Bank</h3>
         {% else %}
-            <p style="position: relative; left: -3%; margin: 0 auto;">Community Bank</p>
+            <h3 style="margin: 0 auto;">Community Bank</h3>
         {% endif %}
         <div style="position: relative; right: 3%; margin-left: 0 0 0 auto">
             {% if points is number %}
-                <h5>{{ points }} Points<i class="material-icons inline-icon">account_circle</i></h5> 
+                <div style="line-height: 5%;">
+                    <p><i class="material-icons inline-icon">account_circle</i></p>
+                    <p style="position: relative; left: -25%;">{{ points }} Points</p>
+                </div> 
             {% else %}
-                <h5>Logged out<i class="material-icons inline-icon">account_circle</i></h5> 
-            {% endif %}       
+                <div style="line-height: 5%;">
+                    <p><i class="material-icons inline-icon">account_circle</i></p>
+                    <p style="position: relative; left: -25%;">Sign in</p>
+                </div>
+            {% endif %}
         </div>
-    </h3>
+    </div>
     <div id="mainBody">
         <h5>{{ eventName }}</h5>
         <p>Meet us at {{ eventData["time"] }} at {{ eventData["location"] }} for {{ eventData["points"] }} points!</p>
