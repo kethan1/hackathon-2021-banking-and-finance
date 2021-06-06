@@ -5,15 +5,19 @@ import posixpath
 from flask import Flask, render_template, session, request, flash, redirect
 from flask_pymongo import PyMongo
 from flask_qrcode import QRcode
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 QRcode(app)
+flask_bcrypt = Bcrypt(app)
+print(flask_bcrypt.generate_password_hash("Password123"))
 
 if not 'DYNO' in os.environ:
     with open("config.json") as configFile:
         jsonConfig = json.load(configFile)
         app.config["MONGO_URI"] = jsonConfig["MONGODB_CONNECTION_URL"]
         app.secret_key = jsonConfig["SECRET_KEY"]
+        app.config["SALT"] = jsonConfig["SALT"]
 else:
     app.config["MONGO_URI"] = os.environ["MONGODB_CONNECTION_URL"]
     app.secret_key = os.environ["SECRET_KEY"]
@@ -42,7 +46,7 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        if "logged_in" in session and  session["logged_in"] != {}:
+        if "logged_in" in session and session["logged_in"] != {}:
             flash("You are Already Logged In")
             return redirect("/")
         return render_template("login.html", points = "Not Logged In")
@@ -50,7 +54,7 @@ def login():
         email, password = request.form["email"], request.form["password"]
         found = mongo.db.users.find_one({"email": email})
         if found is not None:
-            if found["password"] == password:
+            if flask_bcrypt.check_password_hash(found["password"], password):
                 session["logged_in"] = {"email": email, "admin": found["admin"]}
                 flash("Successfully Logged In")
                 return redirect("/")
@@ -74,7 +78,7 @@ def sign_up():
         if found is None:
             mongo.db.users.insert_one({
                 "email": email,
-                "password": password,
+                "password": flask_bcrypt.generate_password_hash(password),
                 "admin": False,
                 "points": 0
             })
