@@ -85,7 +85,10 @@ def sign_up():
                 "admin": False,
                 "points": 0
             })
-            session["logged_in"] = {"email": email}
+            session["logged_in"] = {
+                "email": email,
+                "admin": False
+            }
             flash("Successfully Signed Up")
             return redirect("/")
         else:
@@ -110,6 +113,16 @@ def show_events():
     else:
         points = "Not Logged In"
     return render_template("events.html", events = events, points = points)
+
+
+@app.route("/register_for_event", methods=["GET", "POST"])
+def register_for_event():
+    flash("Thank you for signing up for an event!")
+    return redirect("/events")
+
+@app.route("/register_for_event/<event_name>", methods=["GET", "POST"])
+def register_for_event_args(event_name):
+    return render_template("register_for_event.html", event_name = event_name)
 
 
 @app.route("/redeemables")

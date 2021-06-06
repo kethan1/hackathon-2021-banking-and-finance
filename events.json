@@ -28,11 +28,5 @@
         "time": "2:30 PM",
         "date": "Friday Jun 25th",
         "location": "Animal Shelter"
-    },
-    "Tutoring Kids": {
-        "points": 6,
-        "time": "2:00 PM",
-        "date": "Wednesday Jun 30th",
-        "location": "Tutor Place"
     }
 }

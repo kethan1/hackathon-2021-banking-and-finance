@@ -44,25 +44,22 @@
                 </div>
             {% endif %}
         </div>
-    </div>   
-    <div id="mainBody">
-        <br>
-        {% for eventName in events %}
-            <h5>{{ eventName }}</h5>
-            <img src="{{ qrcode(events[eventName]['qrcode_url']) }}">
-            <br>
-            <br>
-        {% endfor %}
+    </div>
+    <br>
+    <div id="mainBody" style="margin-left: 5%; margin-right: 5%;">
+        <form method="POST" action="/register_for_event">
+            <button class="waves-effect waves-light btn" action="submit">I am attending the {{ event_name }}</button>
+        </form>
         <ul id="slide-out" class="sidenav">
             <li><a href="/">Home</a></li>
             <li><a href="/login">Login</a></li>
             <li><a href="/sign_up">Sign Up</a></li>
             <li><a href="/logout">Logout</a></li>
             <li><a href="/events">Events</a></li>
-            <li><a href="/redeemables">Redeemables</a></li>
+            <li><a href="/admin_generate">Admin Generate</a></li>
         </ul>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var elems = document.querySelectorAll('.sidenav');
