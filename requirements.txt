@@ -4,5 +4,6 @@ flask_qrcode
 flask-hashing
 flask_bcrypt
 flask_cors
+pyisemail
 gunicorn
 dnspython

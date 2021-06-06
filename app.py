@@ -7,6 +7,7 @@ from flask_pymongo import PyMongo
 from flask_qrcode import QRcode
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
+from pyisemail import is_email
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -79,21 +80,25 @@ def sign_up():
     elif request.method == "POST":
         email, password = request.form["email"], request.form["password"]
         if mongo.db.users.find_one({"email": email}) is None:
-            mongo.db.users.insert_one({
-                "email": email,
-                "password": flask_bcrypt.generate_password_hash(password),
-                "admin": False,
-                "points": 0
-            })
-            session["logged_in"] = {
-                "email": email,
-                "admin": False
-            }
-            flash("Successfully Signed Up")
-            return redirect("/")
+            if is_email(email, check_dns=True):
+                mongo.db.users.insert_one({
+                    "email": email,
+                    "password": flask_bcrypt.generate_password_hash(password),
+                    "admin": False,
+                    "points": 0
+                })
+                session["logged_in"] = {
+                    "email": email,
+                    "admin": False
+                }
+                flash("Successfully Signed Up")
+                return redirect("/")
+            else:
+                flash("Invalid Email")
+                return redirect("/sign_up")
         else:
             flash("An Account is Already Registered With That Email Address")
-            return redirect("/")
+            return redirect("/sign_up")
 
 
 @app.route("/logout")
