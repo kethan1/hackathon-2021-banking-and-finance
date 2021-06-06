@@ -122,7 +122,7 @@ def register_for_event():
     else:
         points = "Not Logged In"
     flash("Thank you for signing up for an event!")
-    return redirect("/events", points = points)
+    return redirect("/events")
 
 @app.route("/register_for_event/<event_name>", methods=["GET", "POST"])
 def register_for_event_args(event_name):
@@ -164,7 +164,7 @@ def admin_generate():
             connection_type = "https://" if request.is_secure else "http://"
             for event_name in events:
                 events_with_qr[event_name]["qrcode_url"] = posixpath.join(connection_type, request.host, f"eventParticipate/{event_name}")
-            return render_template("admin_generate.html", events = events_with_qr, points = "Not Logged In" if "logged_in" not in session else mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"])
+            return render_template("admin_generate.html", events = events_with_qr, points =  mongo.db.users.find_one({"email": session["logged_in"]["email"]})["points"])
         else:
             flash("Not Logged In As Admin")
             return redirect("/")
